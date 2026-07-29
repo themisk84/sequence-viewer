@@ -70,7 +70,14 @@ export const useController = ({
   draw: DrawFunction;
   zoomToSearchResult: (nextViewRange: SelectionRange, zoom: boolean) => void;
   resetAngularScroll?: () => void;
-  updateScroll: (deltaX: number, deltaY: number, mouseX: number, mouseY: number, shift: boolean) => void;
+  updateScroll: (
+    deltaX: number,
+    deltaY: number,
+    mouseX: number,
+    mouseY: number,
+    shift: boolean,
+    alt: boolean
+  ) => void;
   getCaretPosition: () => number;
   renderData: React.MutableRefObject<RenderData | null>;
   circularSelection: CircularSelection[];
@@ -201,7 +208,7 @@ export const useController = ({
 
   const onScrollCb = (ev: WheelEvent) => {
     ev.preventDefault();
-    updateScroll(ev.deltaX, ev.deltaY, ev.offsetX, ev.offsetY, ev.shiftKey);
+    updateScroll(ev.deltaX, ev.deltaY, ev.offsetX, ev.offsetY, ev.shiftKey, ev.altKey);
     render();
   };
 

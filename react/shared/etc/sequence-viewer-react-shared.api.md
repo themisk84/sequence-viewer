@@ -89,7 +89,7 @@ export const useController: ({ isProtein, chromatogramData, clickedAnnotation, r
     draw: DrawFunction;
     zoomToSearchResult: (nextViewRange: SelectionRange, zoom: boolean) => void;
     resetAngularScroll?: (() => void) | undefined;
-    updateScroll: (deltaX: number, deltaY: number, mouseX: number, mouseY: number, shift: boolean) => void;
+    updateScroll: (deltaX: number, deltaY: number, mouseX: number, mouseY: number, shift: boolean, alt: boolean) => void;
     getCaretPosition: () => number;
     renderData: React_2.MutableRefObject<RenderData | null>;
     circularSelection: CircularSelection[];

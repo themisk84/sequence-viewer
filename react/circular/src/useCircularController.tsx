@@ -90,13 +90,25 @@ export const useCircularController = ({
     }
   };
 
-  const circularScroll = (deltaX: number, deltaY: number) => {
+  const circularScroll = (
+    deltaX: number,
+    deltaY: number,
+    mouseX: number,
+    mouseY: number,
+    shift: boolean,
+    alt: boolean
+  ) => {
     if (!renderData.current) {
       return;
     }
 
-    const zoomDelta = Math.abs(deltaX) > Math.abs(deltaY) ? 0 : -deltaY / 7500;
-    const scrollDelta = Math.abs(deltaX) > Math.abs(deltaY) ? -deltaX / 1000 : 0;
+    // Under a held modifier the OS may report the scroll on either axis
+    // (wheel mice report deltaX under shift; trackpads report deltaY).
+    const modifierDelta = deltaX + deltaY;
+    const scrollHorizontally = shift || Math.abs(deltaX) > Math.abs(deltaY);
+    const scrollWheelDelta = shift ? modifierDelta : deltaX;
+    const zoomDelta = scrollHorizontally ? 0 : -deltaY / 7500;
+    const scrollDelta = scrollHorizontally ? -scrollWheelDelta / 1000 : 0;
     increase(zoomDelta, renderData.current.circluarCamera.value, renderData.current.circluarCamera.target);
 
     const { radius } = getCircleProperties({
@@ -120,8 +132,15 @@ export const useCircularController = ({
       (Math.PI * 2 + renderData.current.circluarCamera.angleOffset) % (2 * Math.PI);
   };
 
-  const updateScroll = (deltaX: number, deltaY: number) => {
-    circularScroll(deltaX, deltaY);
+  const updateScroll = (
+    deltaX: number,
+    deltaY: number,
+    mouseX: number,
+    mouseY: number,
+    shift: boolean,
+    alt: boolean
+  ) => {
+    circularScroll(deltaX, deltaY, mouseX, mouseY, shift, alt);
   };
 
   const getCaretPosition = () => {

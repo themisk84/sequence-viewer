@@ -99,15 +99,30 @@ export const useLinearController = ({
     _setCircularSelection(cc);
   };
 
-  const updateScroll = (deltaX: number, deltaY: number, mouseX: number, mouseY: number, shift: boolean) => {
+  const updateScroll = (
+    deltaX: number,
+    deltaY: number,
+    mouseX: number,
+    mouseY: number,
+    shift: boolean,
+    alt: boolean
+  ) => {
     if (!renderData.current) {
       return;
     }
 
-    let zoom = !shift ? 1.1 ** (-deltaY / 50) : 1;
+    // Under a held modifier the OS may report the scroll on either axis
+    // (wheel mice report deltaX under shift; trackpads report deltaY).
+    const modifierDelta = deltaX + deltaY;
 
-    let translateY = !shift ? 0 : -1 * deltaY * 0.1;
-    let translateX = !shift ? -deltaX / renderData.current.matrix.a ** (1 / 1.2) : 0;
+    let zoom = shift || alt ? 1 : 1.1 ** (-deltaY / 50);
+
+    let translateY = alt ? -1 * modifierDelta * 0.1 : 0;
+    let translateX = shift
+      ? -modifierDelta / renderData.current.matrix.a ** (1 / 1.2)
+      : !alt
+        ? -deltaX / renderData.current.matrix.a ** (1 / 1.2)
+        : 0;
 
     let transformMatrix = identityMatrix();
     let newMatrix = identityMatrix();
